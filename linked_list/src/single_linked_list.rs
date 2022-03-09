@@ -1,61 +1,134 @@
-#![allow(dead_code)]
+
+// #[derive(Clone, Debug)]
+// enum SingleLinkedList<T> {
+//     None,
+//     Node { payload: T, next: Option<Box<SingleLinkedList<T>>> }
+// }
 
 
-#[derive(PartialEq, Eq, Hash, PartialOrd, Ord, Debug, Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct SingleLinkedList<T> {
-    payload: T,
-    child: Option<Box<SingleLinkedList<T>>>,
+    payload: Option<T>,
+    next: Option<Box<SingleLinkedList<T>>>,
 }
 
 impl<T> SingleLinkedList<T> where T: Copy {
-    pub fn new(payload: T, next: Option<Box<SingleLinkedList<T>>>) -> SingleLinkedList<T> {
-        return SingleLinkedList { payload: payload, child: next };
+    pub fn new() -> SingleLinkedList<T> {
+        return SingleLinkedList { payload: None, next: None, };
     }
 
-    pub fn add_child(&mut self, child: Box<SingleLinkedList<T>>) {
-        self.child = Some(child);
+    pub fn from_value(value: T) -> SingleLinkedList<T> {
+        return SingleLinkedList { payload: Some(value), next: None, };
     }
 
-    pub fn add_child_by_value(&mut self, payload: T) {
-        self.child = Some(Box::new(SingleLinkedList::new(payload, None)));
+    pub fn from_value_with_next(value: T, next: SingleLinkedList<T>) -> SingleLinkedList<T> {
+        return SingleLinkedList { payload: Some(value), next: Some(Box::new(next)), };
     }
 
-    pub fn set_value(&mut self, value: T) {
-        self.payload = value;
+    pub fn get_key(&self) -> Option<T> {
+        return self.payload;
     }
 
-    pub fn get_value(&self) -> T {
-        return self.payload.clone();
+    pub fn set_key(&mut self, value: T) {
+        self.payload = Some(value);
     }
 
-    pub fn get_child(&self) -> Option<&Box<SingleLinkedList<T>>> {
-        return self.child.as_ref();
-    }
-
-    pub fn get_mut_child(&mut self) -> Option<&mut Box<SingleLinkedList<T>>> {
-        return self.child.as_mut();
-    }
-
-    pub fn has_child(&self) -> bool {
-        return self.child.is_some();
-    }
-
-    pub fn get_length(&self) -> u32 {
-        let mut count: u32 = 0;
-        if self.has_child() {
-            count += self.get_child().unwrap().get_length();
+    pub fn get_next(&self) -> Option<&Box<SingleLinkedList<T>>> {
+        match &self.next {
+            None => { return None; },
+            Some(_) => { return self.next.as_ref(); },
         }
-        count += 1;
-        return count;
     }
 
-    // pub fn get_node_by_value(&self, value: T) -> Option<&mut Box<SingleLinkedList<T>>> {
-    //     if self.get_value() == value {
-    //         panic!("fuck");
-    //     }
-    //     while self.has_child() {
+    pub fn set_next(&mut self, next: SingleLinkedList<T>) {
+        let next = Box::new(next);
+        self.next = Some(next);
+    }
 
+    pub fn get_mut_next(&mut self) -> Option<&mut Box<SingleLinkedList<T>>> {
+        match &self.next {
+            None => { return None; },
+            Some(_) => { return self.next.as_mut(); },
+        }
+    }
+
+    // pub fn search(&mut self, value: T) -> Option<&mut Box<SingleLinkedList<T>>> {
+    //     if self.payload == value {
+    //         return self;
+    //     } else {
+    //         if self.next.is_sone() {
+
+    //         } else {
+    //             panic!("Failed to find the value: {:?}", &value);
+    //         }
     //     }
-    //     return None;
+    //     return ;
     // }
+
+    pub fn insert_start() {}
+
+    pub fn insert_end() {}
+
+    pub fn insert() {}
+
+    pub fn delete(&mut self, value: T) {}
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new() {
+        let sll: SingleLinkedList<i32> = SingleLinkedList::new();
+        assert_eq!(sll.get_key(), None);
+        assert_eq!(sll.get_next(), None);
+    }
+
+    #[test]
+    fn test_from_value() {
+        let sll: SingleLinkedList<i32> = SingleLinkedList::from_value(10);
+        assert_eq!(sll.get_key().unwrap(), 10);
+        assert_eq!(sll.get_next(), None);
+    }
+
+    #[test]
+    fn test_from_value_with_next() {
+        let child = SingleLinkedList::from_value(100);
+        let sll: SingleLinkedList<i32> = SingleLinkedList::from_value_with_next(10, child.clone());
+        assert_eq!(sll.get_key().unwrap(), 10);
+        assert_eq!(sll.get_next().unwrap(), &Box::new(child));
+    }
+
+    #[test]
+    fn test_get_key() {
+        let sll: SingleLinkedList<i32> = SingleLinkedList::from_value(10);
+        assert_eq!(sll.get_key().unwrap(), 10);
+    }
+
+    #[test]
+    fn test_set_key() {
+        let mut sll: SingleLinkedList<i32> = SingleLinkedList::new();
+        assert_eq!(sll.get_key(), None);
+        sll.set_key(5);
+        assert_eq!(sll.get_key(), Some(5));
+    }
+
+    #[test]
+    fn test_get_next() {
+        let child = SingleLinkedList::from_value(100);
+        let sll: SingleLinkedList<i32> = SingleLinkedList::from_value_with_next(10, child.clone());
+        assert_eq!(sll.get_next().unwrap(), &Box::new(child));
+
+    }
+
+    #[test]
+    fn test_set_next() {
+        let mut sll: SingleLinkedList<i32> = SingleLinkedList::new();
+        assert_eq!(sll.get_next(), None);
+        let child = SingleLinkedList::from_value(10);
+        sll.set_next(child.clone());
+        assert_eq!(sll.get_next().unwrap(), &Box::new(child));
+    }
 }
