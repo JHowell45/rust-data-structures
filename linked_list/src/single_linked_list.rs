@@ -72,6 +72,24 @@ impl<T> SingleLinkedList<T> where T: Copy {
     pub fn insert() {}
 
     pub fn delete(&mut self, value: T) {}
+
+    fn print_list(&self) {
+        let mut repr = String::new();
+        if self.has_key() {
+            repr.push_str("[");
+            repr.push_str(&self.get_key().unwrap().to_string());
+            repr.push_str("]");
+        }
+        let mut current = self;
+        while current.has_next() {
+            repr.push_str(" --> ");
+            current = current.get_next().unwrap();
+            repr.push_str("[");
+            repr.push_str(&current.get_key().unwrap().to_string());
+            repr.push_str("]");
+        }
+        println!("\n{}", repr);
+    }
 }
 
 
@@ -130,5 +148,18 @@ mod tests {
         let child = SingleLinkedList::from_value(10);
         sll.set_next(child.clone());
         assert_eq!(sll.get_next().unwrap(), &Box::new(child));
+    }
+
+    #[test]
+    fn test_print() {
+        let mut head: SingleLinkedList<i32> = SingleLinkedList::from_value(0);
+        // let mut head_box = Box::new(head);
+        let mut current = &mut head;
+        for val in 1..10 {
+            let temp: SingleLinkedList<i32> = SingleLinkedList::from_value(val);
+            current.set_next(temp);
+            current = current.get_mut_next().unwrap();
+        }
+        head.print_list();
     }
 }
