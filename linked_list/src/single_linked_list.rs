@@ -142,6 +142,17 @@ mod tests {
     }
 
     #[test]
+    fn test_get_mut_next() {
+        let child = SingleLinkedList::from_value(100);
+        let mut sll: SingleLinkedList<i32> = SingleLinkedList::from_value_with_next(10, child.clone());
+        assert_eq!(sll.get_next().unwrap(), &Box::new(child));
+        let mut_next = sll.get_mut_next().unwrap();
+        mut_next.set_key(25);
+        assert_eq!(sll.get_next().unwrap().get_key().unwrap(), 25);
+
+    }
+
+    #[test]
     fn test_set_next() {
         let mut sll: SingleLinkedList<i32> = SingleLinkedList::new();
         assert_eq!(sll.get_next(), None);
