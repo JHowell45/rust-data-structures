@@ -5,6 +5,9 @@
 //     Node { payload: T, next: Option<Box<SingleLinkedList<T>>> }
 // }
 
+use std::fmt::Debug;
+use std::cmp::PartialEq;
+use std::string::ToString;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct SingleLinkedList<T> {
@@ -12,7 +15,7 @@ pub struct SingleLinkedList<T> {
     next: Option<Box<SingleLinkedList<T>>>,
 }
 
-impl<T> SingleLinkedList<T> where T: Copy {
+impl<T> SingleLinkedList<T> where T: Copy + Debug + PartialEq + ToString {
     pub fn new() -> SingleLinkedList<T> {
         return SingleLinkedList { payload: None, next: None, };
     }
