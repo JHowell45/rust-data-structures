@@ -55,18 +55,33 @@ impl<T> SingleLinkedList<T> where T: Copy + Debug + PartialEq + ToString {
         }
     }
 
-    // pub fn search(&mut self, value: T) -> Option<&mut Box<SingleLinkedList<T>>> {
-    //     if self.payload == value {
-    //         return self;
-    //     } else {
-    //         if self.next.is_sone() {
+    pub fn search(&mut self, value: T) -> Option<&mut SingleLinkedList<T>> {
+        if self.check_payload(value) {
+            return Some(self);
+        } else {
+            if self.has_next() {
+                return self.get_mut_next().unwrap().search(value);
+            } else {
+                return None
+            }
+        }
+    }
 
-    //         } else {
-    //             panic!("Failed to find the value: {:?}", &value);
-    //         }
-    //     }
-    //     return ;
-    // }
+    fn check_payload(&self, value: T) -> bool {
+        match self.payload {
+            None => { return false },
+            Some(payload) => { return payload == value },
+        }
+    }
+
+    fn has_key(&self) -> bool {
+        return self.payload.is_some();
+    }
+
+    /// Checks that the current node has a next value.
+    pub fn has_next(&self) -> bool {
+        return self.next.is_some();
+    }
 
     pub fn insert_start() {}
 
